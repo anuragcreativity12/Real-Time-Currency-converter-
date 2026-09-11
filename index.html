@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>RateX - Live Currency Converter</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            💱 RateX
+        </div>
+
+        <nav>
+
+            <a href="#">
+                Converter
+            </a>
+
+            <a href="#">
+                Markets
+            </a>
+
+            <a href="#">
+                About
+            </a>
+
+        </nav>
+
+        <button
+            id="themeBtn"
+            class="theme-btn"
+        >
+            🌙
+        </button>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main>
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <p class="live">
+                ● LIVE MARKET DATA
+            </p>
+
+            <h1>
+                Currency Converter
+            </h1>
+
+            <p>
+                Convert currencies using
+                current exchange rates.
+            </p>
+
+        </section>
+
+
+
+        <!-- CONVERTER -->
+
+        <section class="converter-card">
+
+
+            <!-- FROM -->
+
+            <div class="currency-box">
+
+                <label>
+                    You Send
+                </label>
+
+
+                <div class="input-row">
+
+                    <input
+                        type="number"
+                        id="amount"
+                        value="1000"
+                        min="0"
+                    >
+
+
+                    <select id="fromCurrency">
+
+                        <option value="USD">
+                            🇺🇸 USD
+                        </option>
+
+                        <option value="INR" selected>
+                            🇮🇳 INR
+                        </option>
+
+                        <option value="EUR">
+                            🇪🇺 EUR
+                        </option>
+
+                        <option value="GBP">
+                            🇬🇧 GBP
+                        </option>
+
+                        <option value="AED">
+                            🇦🇪 AED
+                        </option>
+
+                        <option value="SAR">
+                            🇸🇦 SAR
+                        </option>
+
+                        <option value="JPY">
+                            🇯🇵 JPY
+                        </option>
+
+                        <option value="CAD">
+                            🇨🇦 CAD
+                        </option>
+
+                        <option value="AUD">
+                            🇦🇺 AUD
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SWAP -->
+
+            <button
+                id="swapBtn"
+                class="swap-btn"
+            >
+                ⇅
+            </button>
+
+
+
+            <!-- TO -->
+
+            <div class="currency-box">
+
+                <label>
+                    You Receive
+                </label>
+
+
+                <div class="input-row">
+
+                    <input
+                        type="text"
+                        id="result"
+                        value="Loading..."
+                        readonly
+                    >
+
+
+                    <select id="toCurrency">
+
+                        <option value="USD" selected>
+                            🇺🇸 USD
+                        </option>
+
+                        <option value="INR">
+                            🇮🇳 INR
+                        </option>
+
+                        <option value="EUR">
+                            🇪🇺 EUR
+                        </option>
+
+                        <option value="GBP">
+                            🇬🇧 GBP
+                        </option>
+
+                        <option value="AED">
+                            🇦🇪 AED
+                        </option>
+
+                        <option value="SAR">
+                            🇸🇦 SAR
+                        </option>
+
+                        <option value="JPY">
+                            🇯🇵 JPY
+                        </option>
+
+                        <option value="CAD">
+                            🇨🇦 CAD
+                        </option>
+
+                        <option value="AUD">
+                            🇦🇺 AUD
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RATE -->
+
+            <div class="rate-info">
+
+                <strong id="rateText">
+                    Loading exchange rate...
+                </strong>
+
+                <span id="updateTime">
+                    Updating...
+                </span>
+
+            </div>
+
+
+
+            <!-- CONVERT BUTTON -->
+
+            <button
+                id="convertBtn"
+                class="convert-btn"
+            >
+
+                Convert Currency
+
+            </button>
+
+
+        </section>
+
+
+
+        <!-- MARKET -->
+
+        <section class="market-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Popular Market Rates
+                    </h2>
+
+                    <p>
+                        Current reference rates
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="refreshBtn"
+                    class="refresh-btn"
+                >
+
+                    🔄 Refresh
+
+                </button>
+
+            </div>
+
+
+
+            <div class="market-grid">
+
+
+                <div class="market-card">
+
+                    <span>
+                        🇺🇸 USD / 🇮🇳 INR
+                    </span>
+
+                    <strong id="usdInr">
+                        Loading...
+                    </strong>
+
+                    <small id="usdChange">
+                        Updating...
+                    </small>
+
+                </div>
+
+
+
+                <div class="market-card">
+
+                    <span>
+                        🇪🇺 EUR / 🇮🇳 INR
+                    </span>
+
+                    <strong id="eurInr">
+                        Loading...
+                    </strong>
+
+                    <small>
+                        Live reference
+                    </small>
+
+                </div>
+
+
+
+                <div class="market-card">
+
+                    <span>
+                        🇬🇧 GBP / 🇮🇳 INR
+                    </span>
+
+                    <strong id="gbpInr">
+                        Loading...
+                    </strong>
+
+                    <small>
+                        Live reference
+                    </small>
+
+                </div>
+
+
+
+                <div class="market-card">
+
+                    <span>
+                        🇦🇪 AED / 🇮🇳 INR
+                    </span>
+
+                    <strong id="aedInr">
+                        Loading...
+                    </strong>
+
+                    <small>
+                        Live reference
+                    </small>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 RateX
+        </p>
+
+        <p>
+            Exchange rates are for reference purposes.
+        </p>
+
+    </footer>
+
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
