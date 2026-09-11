@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="RateX Market Dashboard">
+
+    <title>RateX | Markets</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+    <a href="index.html" class="logo">
+        💱 <span>RateX</span>
+    </a>
+
+    <nav>
+
+        <a href="index.html">
+            Converter
+        </a>
+
+        <a href="market.html"
+           class="active">
+            Markets
+        </a>
+
+        <a href="about.html">
+            About
+        </a>
+
+    </nav>
+
+    <button id="themeBtn"
+            class="icon-btn">
+
+        🌙
+
+    </button>
+
+</header>
+
+
+<!-- MAIN -->
+
+<main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="live-badge">
+
+            <span class="live-dot"></span>
+
+            MARKET DATA
+
+        </div>
+
+        <h1>
+            Global Markets
+        </h1>
+
+        <p>
+            Track popular currency pairs and
+            reference exchange rates.
+        </p>
+
+    </section>
+
+
+    <!-- MARKET CONTROL -->
+
+    <section class="market-toolbar">
+
+        <div>
+
+            <h2>
+                Currency Market
+            </h2>
+
+            <p id="marketUpdated">
+                Updating market data...
+            </p>
+
+        </div>
+
+
+        <button id="marketRefresh"
+                class="secondary-btn">
+
+            🔄 Refresh
+
+        </button>
+
+    </section>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        🔎
+
+        <input
+            id="currencySearch"
+            type="text"
+            placeholder="Search currency...">
+
+    </div>
+
+
+    <!-- MARKET TABLE -->
+
+    <section class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Currency
+                        </th>
+
+                        <th>
+                            Code
+                        </th>
+
+                        <th>
+                            Rate vs INR
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="marketTable">
+
+                    <tr>
+                        <td colspan="4">
+                            Loading market data...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- MARKET CARDS -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Popular Pairs
+                </h2>
+
+                <p>
+                    Frequently viewed currency pairs
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="market-grid">
+
+            <div class="market-card">
+
+                <span>
+                    🇺🇸 USD / INR
+                </span>
+
+                <strong id="marketUsd">
+                    Loading...
+                </strong>
+
+                <small>
+                    Reference rate
+                </small>
+
+            </div>
+
+
+            <div class="market-card">
+
+                <span>
+                    🇪🇺 EUR / INR
+                </span>
+
+                <strong id="marketEur">
+                    Loading...
+                </strong>
+
+                <small>
+                    Reference rate
+                </small>
+
+            </div>
+
+
+            <div class="market-card">
+
+                <span>
+                    🇬🇧 GBP / INR
+                </span>
+
+                <strong id="marketGbp">
+                    Loading...
+                </strong>
+
+                <small>
+                    Reference rate
+                </small>
+
+            </div>
+
+
+            <div class="market-card">
+
+                <span>
+                    🇯🇵 JPY / INR
+                </span>
+
+                <strong id="marketJpy">
+                    Loading...
+                </strong>
+
+                <small>
+                    Reference rate
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DISCLAIMER -->
+
+    <section class="info-card">
+
+        <h2>
+            About Market Data
+        </h2>
+
+        <p>
+            RateX uses an external exchange-rate service
+            to retrieve reference rates. Currency rates can
+            change continuously in real financial markets,
+            while API data may update at different intervals.
+        </p>
+
+        <p>
+            RateX is an educational and portfolio project
+            and should not be treated as a trading platform
+            or financial advisory service.
+        </p>
+
+    </section>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <strong>💱 RateX</strong>
+
+    <p>
+        Developed by Anurag Mishra
+    </p>
+
+    <p>
+        Market information is provided for reference purposes.
+    </p>
+
+</footer>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
