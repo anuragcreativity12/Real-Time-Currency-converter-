@@ -1,64 +1,70 @@
+/* =========================================================
+   RATEX — LIVE CURRENCY CONVERTER
+   Uses Frankfurter API (ECB reference exchange rates)
+   ========================================================= */
+
 "use strict";
 
+const amountInput = document.getElementById("amount");
+const fromCurrency = document.getElementById("fromCurrency");
+const toCurrency = document.getElementById("toCurrency");
 
-/* =========================================================
-   RATEX
-   CURRENCY ENGINE
-========================================================= */
+const result = document.getElementById("result");
+const rateText = document.getElementById("rateText");
+const updateTime = document.getElementById("updateTime");
+
+const swapBtn = document.getElementById("swapBtn");
+const convertBtn = document.getElementById("convertBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+
+const usdInr = document.getElementById("usdInr");
+const eurInr = document.getElementById("eurInr");
+const gbpInr = document.getElementById("gbpInr");
+const aedInr = document.getElementById("aedInr");
+
+const themeBtn = document.getElementById("themeBtn");
+
+let currentRate = null;
 
 
 /* =========================================================
    API
-========================================================= */
+   ========================================================= */
 
-const API = "https://api.frankfurter.app";
-
-
-/* =========================================================
-   DOM
-========================================================= */
-
-const amount =
-    document.getElementById("amount");
-
-const fromCurrency =
-    document.getElementById("fromCurrency");
-
-const toCurrency =
-    document.getElementById("toCurrency");
-
-const result =
-    document.getElementById("result");
-
-const rateText =
-    document.getElementById("rateText");
-
-const updateTime =
-    document.getElementById("updateTime");
-
-const swapBtn =
-    document.getElementById("swapBtn");
-
-const convertBtn =
-    document.getElementById("convertBtn");
-
-const refreshBtn =
-    document.getElementById("refreshBtn");
-
-const themeBtn =
-    document.getElementById("themeBtn");
-
-const toast =
-    document.getElementById("toast");
+const API_URL = "https://api.frankfurter.app";
 
 
 /* =========================================================
-   TOAST
-========================================================= */
+   FORMAT NUMBER
+   ========================================================= */
+
+function formatNumber(number) {
+
+    return new Intl.NumberFormat("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4
+    }).format(number);
+
+}
+
+
+/* =========================================================
+   SHOW TOAST
+   ========================================================= */
 
 function showToast(message) {
 
-    if (!toast) return;
+    let toast = document.querySelector(".toast");
+
+    if (!toast) {
+
+        toast = document.createElement("div");
+
+        toast.className = "toast";
+
+        document.body.appendChild(toast);
+
+    }
 
     toast.textContent = message;
 
@@ -69,14 +75,15 @@ function showToast(message) {
         toast.classList.remove("show");
 
     }, 3000);
+
 }
 
 
 /* =========================================================
-   API FETCH
-========================================================= */
+   GET EXCHANGE RATE
+   ========================================================= */
 
-async function fetchRate(from, to) {
+async function getRate(from, to) {
 
     if (from === to) {
 
@@ -84,36 +91,31 @@ async function fetchRate(from, to) {
 
     }
 
-
     const url =
-        `${API}/latest?from=${from}&to=${to}`;
+        `${API_URL}/latest?from=${from}&to=${to}`;
 
-
-    const response =
-        await fetch(url);
-
+    const response = await fetch(url);
 
     if (!response.ok) {
 
         throw new Error(
-            "Exchange rate service unavailable"
+            `API Error: ${response.status}`
         );
 
     }
 
+    const data = await response.json();
 
-    const data =
-        await response.json();
-
-
-    if (!data.rates || !data.rates[to]) {
+    if (
+        !data.rates ||
+        data.rates[to] === undefined
+    ) {
 
         throw new Error(
-            "Currency rate unavailable"
+            "Exchange rate unavailable"
         );
 
     }
-
 
     return data.rates[to];
 
@@ -121,137 +123,97 @@ async function fetchRate(from, to) {
 
 
 /* =========================================================
-   FORMAT NUMBER
-========================================================= */
-
-function formatNumber(number) {
-
-    return Number(number).toLocaleString(
-        "en-IN",
-        {
-            maximumFractionDigits: 4
-        }
-    );
-
-}
-
-
-/* =========================================================
-   CONVERTER
-========================================================= */
+   CONVERT CURRENCY
+   ========================================================= */
 
 async function convertCurrency() {
 
-    if (
-        !amount ||
-        !fromCurrency ||
-        !toCurrency ||
-        !result
-    ) {
-
-        return;
-
-    }
-
-
-    const value =
-        Number(amount.value);
-
+    const amount =
+        parseFloat(amountInput.value);
 
     const from =
         fromCurrency.value;
-
 
     const to =
         toCurrency.value;
 
 
-    if (
-        Number.isNaN(value) ||
-        value < 0
-    ) {
+    if (isNaN(amount) || amount < 0) {
 
-        result.value =
-            "Invalid amount";
+        result.value = "Invalid amount";
 
         return;
 
     }
 
 
-    result.value =
-        "Loading...";
+    if (from === to) {
 
+        currentRate = 1;
 
-    if (rateText) {
+        result.value =
+            formatNumber(amount);
 
         rateText.textContent =
-            "Fetching live reference rate...";
+            `1 ${from} = 1 ${to}`;
+
+        updateTime.textContent =
+            "Same currency";
+
+        return;
 
     }
 
 
+    result.value = "Loading...";
+
+    rateText.textContent =
+        "Fetching live exchange rate...";
+
+    updateTime.textContent =
+        "Connecting to market data";
+
+
     try {
 
-        const rate =
-            await fetchRate(
-                from,
-                to
-            );
+        currentRate =
+            await getRate(from, to);
 
 
         const converted =
-            value * rate;
+            amount * currentRate;
 
 
         result.value =
             formatNumber(converted);
 
 
-        if (rateText) {
-
-            rateText.textContent =
-                `1 ${from} = ${formatNumber(rate)} ${to}`;
-
-        }
+        rateText.textContent =
+            `1 ${from} = ${formatNumber(currentRate)} ${to}`;
 
 
-        if (updateTime) {
+        updateTime.textContent =
+            `Updated: ${new Date().toLocaleString(
+                "en-IN"
+            )}`;
 
-            updateTime.textContent =
-                `Updated ${new Date().toLocaleString()}`;
 
-        }
-
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(error);
-
 
         result.value =
             "Unavailable";
 
+        rateText.textContent =
+            "Unable to retrieve exchange rate";
 
-        if (rateText) {
-
-            rateText.textContent =
-                "Unable to retrieve live rate";
-
-        }
-
-
-        if (updateTime) {
-
-            updateTime.textContent =
-                "Please try again";
-
-        }
+        updateTime.textContent =
+            "Please try again";
 
 
         showToast(
-            "Unable to retrieve exchange rate."
+            "Unable to load live exchange data."
         );
 
     }
@@ -260,8 +222,155 @@ async function convertCurrency() {
 
 
 /* =========================================================
-   SWAP
-========================================================= */
+   MARKET RATES
+   ========================================================= */
+
+async function loadMarketRates() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/latest?from=USD&to=INR,EUR,GBP`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Market API error"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const usdRate =
+            data.rates.INR;
+
+        const eurRate =
+            data.rates.EUR;
+
+        const gbpRate =
+            data.rates.GBP;
+
+
+        /* USD → INR */
+
+        if (usdInr) {
+
+            usdInr.textContent =
+                `₹${formatNumber(usdRate)}`;
+
+        }
+
+
+        /* EUR → INR */
+
+        if (eurInr) {
+
+            const eurToInr =
+                usdRate / eurRate;
+
+            eurInr.textContent =
+                `₹${formatNumber(eurToInr)}`;
+
+        }
+
+
+        /* GBP → INR */
+
+        if (gbpInr) {
+
+            const gbpToInr =
+                usdRate / gbpRate;
+
+            gbpInr.textContent =
+                `₹${formatNumber(gbpToInr)}`;
+
+        }
+
+
+        /*
+           AED is not included in
+           this API response.
+        */
+
+        if (aedInr) {
+
+            try {
+
+                const aedRate =
+                    await getRate(
+                        "AED",
+                        "INR"
+                    );
+
+                aedInr.textContent =
+                    `₹${formatNumber(aedRate)}`;
+
+            } catch {
+
+                aedInr.textContent =
+                    "Unavailable";
+
+            }
+
+        }
+
+
+        const changeElements =
+            document.querySelectorAll(
+                ".market-card small"
+            );
+
+
+        changeElements.forEach(
+            element => {
+
+                element.textContent =
+                    "Latest reference rate";
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Market error:",
+            error
+        );
+
+
+        if (usdInr)
+            usdInr.textContent = "Unavailable";
+
+        if (eurInr)
+            eurInr.textContent = "Unavailable";
+
+        if (gbpInr)
+            gbpInr.textContent = "Unavailable";
+
+        if (aedInr)
+            aedInr.textContent = "Unavailable";
+
+
+        showToast(
+            "Market data could not be loaded."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SWAP CURRENCIES
+   ========================================================= */
 
 if (swapBtn) {
 
@@ -272,10 +381,8 @@ if (swapBtn) {
             const oldFrom =
                 fromCurrency.value;
 
-
             fromCurrency.value =
                 toCurrency.value;
-
 
             toCurrency.value =
                 oldFrom;
@@ -291,7 +398,7 @@ if (swapBtn) {
 
 /* =========================================================
    CONVERT BUTTON
-========================================================= */
+   ========================================================= */
 
 if (convertBtn) {
 
@@ -305,11 +412,11 @@ if (convertBtn) {
 
 /* =========================================================
    AUTO CONVERSION
-========================================================= */
+   ========================================================= */
 
-if (amount) {
+if (amountInput) {
 
-    amount.addEventListener(
+    amountInput.addEventListener(
         "input",
         convertCurrency
     );
@@ -338,388 +445,8 @@ if (toCurrency) {
 
 
 /* =========================================================
-   POPULAR RATES
-========================================================= */
-
-async function loadPopularRates() {
-
-    const currencies = {
-
-        USD: "usdInr",
-
-        EUR: "eurInr",
-
-        GBP: "gbpInr",
-
-        AED: "aedInr"
-
-    };
-
-
-    for (
-        const currency in currencies
-    ) {
-
-        const element =
-            document.getElementById(
-                currencies[currency]
-            );
-
-
-        if (!element) continue;
-
-
-        try {
-
-            const rate =
-                await fetchRate(
-                    currency,
-                    "INR"
-                );
-
-
-            element.textContent =
-                formatNumber(rate);
-
-        }
-
-        catch (error) {
-
-            element.textContent =
-                "Unavailable";
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   MARKET PAGE
-========================================================= */
-
-const marketTable =
-    document.getElementById("marketTable");
-
-const currencySearch =
-    document.getElementById("currencySearch");
-
-const marketUpdated =
-    document.getElementById("marketUpdated");
-
-const marketRefresh =
-    document.getElementById("marketRefresh");
-
-
-const currencies = [
-
-    {
-        code: "USD",
-        name: "US Dollar",
-        flag: "🇺🇸"
-    },
-
-    {
-        code: "EUR",
-        name: "Euro",
-        flag: "🇪🇺"
-    },
-
-    {
-        code: "GBP",
-        name: "British Pound",
-        flag: "🇬🇧"
-    },
-
-    {
-        code: "AED",
-        name: "UAE Dirham",
-        flag: "🇦🇪"
-    },
-
-    {
-        code: "SAR",
-        name: "Saudi Riyal",
-        flag: "🇸🇦"
-    },
-
-    {
-        code: "JPY",
-        name: "Japanese Yen",
-        flag: "🇯🇵"
-    },
-
-    {
-        code: "CAD",
-        name: "Canadian Dollar",
-        flag: "🇨🇦"
-    },
-
-    {
-        code: "AUD",
-        name: "Australian Dollar",
-        flag: "🇦🇺"
-    },
-
-    {
-        code: "CHF",
-        name: "Swiss Franc",
-        flag: "🇨🇭"
-    },
-
-    {
-        code: "SGD",
-        name: "Singapore Dollar",
-        flag: "🇸🇬"
-    },
-
-    {
-        code: "CNY",
-        name: "Chinese Yuan",
-        flag: "🇨🇳"
-    }
-
-];
-
-
-async function loadMarket() {
-
-    if (!marketTable) return;
-
-
-    marketTable.innerHTML = "";
-
-
-    for (
-        const currency of currencies
-    ) {
-
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${currency.flag}
-                ${currency.name}
-            </td>
-
-            <td>
-                <strong>
-                    ${currency.code}
-                </strong>
-            </td>
-
-            <td id="rate-${currency.code}">
-                Loading...
-            </td>
-
-            <td>
-                <span class="status">
-                    Live Reference
-                </span>
-            </td>
-
-        `;
-
-
-        marketTable.appendChild(row);
-
-
-        try {
-
-            const rate =
-                await fetchRate(
-                    currency.code,
-                    "INR"
-                );
-
-
-            const cell =
-                document.getElementById(
-                    `rate-${currency.code}`
-                );
-
-
-            if (cell) {
-
-                cell.textContent =
-                    formatNumber(rate);
-
-            }
-
-        }
-
-        catch (error) {
-
-            const cell =
-                document.getElementById(
-                    `rate-${currency.code}`
-                );
-
-
-            if (cell) {
-
-                cell.textContent =
-                    "Unavailable";
-
-            }
-
-        }
-
-    }
-
-
-    if (marketUpdated) {
-
-        marketUpdated.textContent =
-            `Updated ${new Date().toLocaleString()}`;
-
-    }
-
-
-    loadMarketCards();
-
-}
-
-
-/* =========================================================
-   MARKET CARDS
-========================================================= */
-
-async function loadMarketCards() {
-
-    const cards = {
-
-        USD: "marketUsd",
-
-        EUR: "marketEur",
-
-        GBP: "marketGbp",
-
-        JPY: "marketJpy"
-
-    };
-
-
-    for (
-        const currency in cards
-    ) {
-
-        const element =
-            document.getElementById(
-                cards[currency]
-            );
-
-
-        if (!element) continue;
-
-
-        try {
-
-            const rate =
-                await fetchRate(
-                    currency,
-                    "INR"
-                );
-
-
-            element.textContent =
-                formatNumber(rate);
-
-        }
-
-        catch (error) {
-
-            element.textContent =
-                "Unavailable";
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   MARKET SEARCH
-========================================================= */
-
-if (currencySearch) {
-
-    currencySearch.addEventListener(
-        "input",
-        () => {
-
-            const search =
-                currencySearch.value
-                    .toLowerCase()
-                    .trim();
-
-
-            const rows =
-                marketTable.querySelectorAll(
-                    "tr"
-                );
-
-
-            rows.forEach(row => {
-
-                const text =
-                    row.textContent
-                        .toLowerCase();
-
-
-                row.style.display =
-                    text.includes(search)
-                        ? ""
-                        : "none";
-
-            });
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   MARKET REFRESH
-========================================================= */
-
-if (marketRefresh) {
-
-    marketRefresh.addEventListener(
-        "click",
-        async () => {
-
-            marketRefresh.disabled =
-                true;
-
-            marketRefresh.textContent =
-                "⏳ Loading...";
-
-
-            await loadMarket();
-
-
-            marketRefresh.disabled =
-                false;
-
-            marketRefresh.textContent =
-                "🔄 Refresh";
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   HOMEPAGE REFRESH
-========================================================= */
+   REFRESH MARKET
+   ========================================================= */
 
 if (refreshBtn) {
 
@@ -727,28 +454,23 @@ if (refreshBtn) {
         "click",
         async () => {
 
-            refreshBtn.disabled =
-                true;
+            refreshBtn.classList.add(
+                "loading"
+            );
 
             refreshBtn.textContent =
-                "⏳ Updating...";
+                "⟳ Updating...";
 
 
-            await convertCurrency();
-
-            await loadPopularRates();
+            await loadMarketRates();
 
 
-            refreshBtn.disabled =
-                false;
+            refreshBtn.classList.remove(
+                "loading"
+            );
 
             refreshBtn.textContent =
                 "🔄 Refresh";
-
-
-            showToast(
-                "Rates refreshed."
-            );
 
         }
     );
@@ -758,57 +480,7 @@ if (refreshBtn) {
 
 /* =========================================================
    DARK MODE
-========================================================= */
-
-function setTheme(theme) {
-
-    if (theme === "dark") {
-
-        document.body.classList.add(
-            "dark"
-        );
-
-
-        if (themeBtn) {
-
-            themeBtn.textContent =
-                "☀️";
-
-        }
-
-    }
-
-    else {
-
-        document.body.classList.remove(
-            "dark"
-        );
-
-
-        if (themeBtn) {
-
-            themeBtn.textContent =
-                "🌙";
-
-        }
-
-    }
-
-}
-
-
-const savedTheme =
-    localStorage.getItem(
-        "ratex-theme"
-    );
-
-
-if (savedTheme) {
-
-    setTheme(savedTheme);
-
-}
-
+   ========================================================= */
 
 if (themeBtn) {
 
@@ -816,24 +488,26 @@ if (themeBtn) {
         "click",
         () => {
 
-            const dark =
+            document.body.classList.toggle(
+                "dark"
+            );
+
+
+            const darkMode =
                 document.body.classList.contains(
                     "dark"
                 );
 
 
-            const newTheme =
-                dark
-                    ? "light"
-                    : "dark";
-
-
-            setTheme(newTheme);
+            themeBtn.textContent =
+                darkMode ? "☀️" : "🌙";
 
 
             localStorage.setItem(
                 "ratex-theme",
-                newTheme
+                darkMode
+                    ? "dark"
+                    : "light"
             );
 
         }
@@ -843,31 +517,53 @@ if (themeBtn) {
 
 
 /* =========================================================
-   INITIALIZE
-========================================================= */
+   LOAD SAVED THEME
+   ========================================================= */
+
+const savedTheme =
+    localStorage.getItem(
+        "ratex-theme"
+    );
+
+
+if (savedTheme === "dark") {
+
+    document.body.classList.add(
+        "dark"
+    );
+
+    if (themeBtn) {
+
+        themeBtn.textContent =
+            "☀️";
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+   ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => {
+    async () => {
 
-        if (
-            amount &&
-            fromCurrency &&
-            toCurrency
-        ) {
+        await convertCurrency();
 
-            convertCurrency();
-
-            loadPopularRates();
-
-        }
-
-
-        if (marketTable) {
-
-            loadMarket();
-
-        }
+        await loadMarketRates();
 
     }
+);
+
+
+/* =========================================================
+   AUTO REFRESH
+   Every 5 minutes
+   ========================================================= */
+
+setInterval(
+    loadMarketRates,
+    5 * 60 * 1000
 );
