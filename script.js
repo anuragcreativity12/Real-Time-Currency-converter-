@@ -1,13 +1,22 @@
-/* =========================================================
-   RATEX — PROFESSIONAL CURRENCY ENGINE
-   ========================================================= */
-
 "use strict";
 
-
 /* =========================================================
-   DOM ELEMENTS
+   RATEX CURRENCY ENGINE
+   Works with the existing index.html
    ========================================================= */
+
+
+/* ---------------------------------------------------------
+   API
+   --------------------------------------------------------- */
+
+const API_BASE =
+    "https://open.er-api.com/v6/latest";
+
+
+/* ---------------------------------------------------------
+   DOM ELEMENTS
+   --------------------------------------------------------- */
 
 const amountInput =
     document.getElementById("amount");
@@ -40,170 +49,105 @@ const themeBtn =
     document.getElementById("themeBtn");
 
 
-/* =========================================================
-   CONFIGURATION
-   ========================================================= */
+/* ---------------------------------------------------------
+   STORAGE
+   --------------------------------------------------------- */
 
-const API_BASE =
-    "https://api.frankfurter.app";
+let ratesCache = {};
 
-
-const marketPairs = [
-    {
-        from: "INR",
-        to: "USD",
-        element: "usdInr",
-        changeElement: "usdChange"
-    },
-
-    {
-        from: "INR",
-        to: "EUR",
-        element: "eurInr"
-    },
-
-    {
-        from: "INR",
-        to: "GBP",
-        element: "gbpInr"
-    },
-
-    {
-        from: "INR",
-        to: "AED",
-        element: "aedInr"
-    }
-];
+let lastBaseCurrency = null;
 
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+/* ---------------------------------------------------------
+   FORMAT NUMBER
+   --------------------------------------------------------- */
+
+function formatNumber(
+    number,
+    decimals = 2
+) {
+
+    return Number(number).toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        }
+    );
+}
+
+
+/* ---------------------------------------------------------
+   TOAST
+   --------------------------------------------------------- */
 
 function showToast(message) {
 
     let toast =
         document.querySelector(".toast");
 
+
     if (!toast) {
 
         toast =
             document.createElement("div");
 
-        toast.className = "toast";
+        toast.className =
+            "toast";
 
-        document.body.appendChild(toast);
+        document.body.appendChild(
+            toast
+        );
     }
 
-    toast.textContent = message;
+
+    toast.textContent =
+        message;
+
 
     requestAnimationFrame(() => {
-        toast.classList.add("show");
+
+        toast.classList.add(
+            "show"
+        );
+
     });
+
 
     clearTimeout(
         window.toastTimer
     );
 
+
     window.toastTimer =
         setTimeout(() => {
 
-            toast.classList.remove("show");
+            toast.classList.remove(
+                "show"
+            );
 
-        }, 3000);
+        }, 3500);
 }
 
 
-function formatNumber(
-    value,
-    maximumFractionDigits = 2
+/* ---------------------------------------------------------
+   API REQUEST
+   --------------------------------------------------------- */
+
+async function getRates(
+    baseCurrency
 ) {
-
-    return Number(value).toLocaleString(
-        undefined,
-        {
-            minimumFractionDigits: 2,
-            maximumFractionDigits
-        }
-    );
-}
-
-
-function setLoading(
-    element,
-    state = true
-) {
-
-    if (!element) return;
-
-    element.classList.toggle(
-        "loading",
-        state
-    );
-}
-
-
-/* =========================================================
-   MAIN CONVERTER
-   ========================================================= */
-
-async function convertCurrency() {
-
-    const amount =
-        Number(amountInput.value);
-
-    const from =
-        fromCurrency.value;
-
-    const to =
-        toCurrency.value;
-
-
-    if (!Number.isFinite(amount) || amount < 0) {
-
-        result.value = "";
-
-        rateText.textContent =
-            "Please enter a valid amount.";
-
-        updateTime.textContent =
-            "Waiting for input.";
-
-        return;
-    }
-
-
-    if (from === to) {
-
-        result.value =
-            formatNumber(amount);
-
-        rateText.textContent =
-            `1 ${from} = 1 ${to}`;
-
-        updateTime.textContent =
-            "Same currency";
-
-        return;
-    }
-
 
     try {
 
-        result.value = "...";
-
-        setLoading(
-            rateText,
-            true
-        );
-
-
-        const url =
-            `${API_BASE}/latest?amount=1&from=${from}&to=${to}`;
-
-
         const response =
-            await fetch(url);
+            await fetch(
+                `${API_BASE}/${baseCurrency}`,
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
 
 
         if (!response.ok) {
@@ -218,14 +162,120 @@ async function convertCurrency() {
             await response.json();
 
 
-        const rate =
-            data.rates[to];
-
-
-        if (!rate) {
+        if (
+            data.result !==
+            "success"
+        ) {
 
             throw new Error(
-                "Exchange rate unavailable"
+                "API returned an error"
+            );
+        }
+
+
+        ratesCache =
+            data.rates;
+
+
+        lastBaseCurrency =
+            data.base_code;
+
+
+        return data;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Currency API error:",
+            error
+        );
+
+
+        throw error;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   CONVERT
+   --------------------------------------------------------- */
+
+async function convertCurrency() {
+
+    const amount =
+        Number(
+            amountInput.value
+        );
+
+
+    const from =
+        fromCurrency.value;
+
+
+    const to =
+        toCurrency.value;
+
+
+    if (
+        !Number.isFinite(amount) ||
+        amount < 0
+    ) {
+
+        result.value =
+            "";
+
+        rateText.textContent =
+            "Enter a valid amount";
+
+        updateTime.textContent =
+            "Waiting for input";
+
+        return;
+    }
+
+
+    try {
+
+        result.value =
+            "Loading...";
+
+
+        /*
+         * If our cached rates are not based
+         * on the selected FROM currency,
+         * request new rates.
+         */
+
+        if (
+            lastBaseCurrency !==
+            from
+        ) {
+
+            const data =
+                await getRates(
+                    from
+                );
+
+
+            updateTime.textContent =
+                `Updated: ${formatUpdateTime(
+                    data.time_last_update_unix
+                )}`;
+        }
+
+
+        const rate =
+            ratesCache[to];
+
+
+        if (
+            rate === undefined
+        ) {
+
+            throw new Error(
+                `Rate for ${to} unavailable`
             );
         }
 
@@ -236,19 +286,31 @@ async function convertCurrency() {
 
         result.value =
             formatNumber(
-                converted
+                converted,
+                getDecimalPlaces(to)
             );
 
 
         rateText.textContent =
-            `1 ${from} = ${formatNumber(
-                rate,
-                6
+            `1 ${from} = ${formatRate(
+                rate
             )} ${to}`;
 
 
-        updateTime.textContent =
-            `Reference rate • ${data.date}`;
+        if (
+            lastBaseCurrency ===
+            from
+        ) {
+
+            if (
+                updateTime.textContent ===
+                ""
+            ) {
+
+                updateTime.textContent =
+                    "Rate loaded successfully";
+            }
+        }
 
 
     }
@@ -256,52 +318,123 @@ async function convertCurrency() {
     catch (error) {
 
         console.error(
-            "Conversion error:",
             error
         );
 
 
         result.value =
-            "—";
+            "Unavailable";
 
 
         rateText.textContent =
-            "Exchange rate unavailable";
+            "Unable to retrieve exchange rate";
 
 
         updateTime.textContent =
-            "Please try again later.";
+            "Check your internet connection";
 
 
         showToast(
-            "Unable to fetch the exchange rate."
-        );
-    }
-
-    finally {
-
-        setLoading(
-            rateText,
-            false
+            "Currency data could not be loaded."
         );
     }
 }
 
 
-/* =========================================================
+/* ---------------------------------------------------------
+   RATE DECIMAL LOGIC
+   --------------------------------------------------------- */
+
+function getDecimalPlaces(
+    currency
+) {
+
+    const zeroDecimalCurrencies = [
+        "JPY",
+        "KRW",
+        "VND",
+        "IDR"
+    ];
+
+
+    if (
+        zeroDecimalCurrencies.includes(
+            currency
+        )
+    ) {
+
+        return 0;
+    }
+
+
+    return 2;
+}
+
+
+function formatRate(
+    rate
+) {
+
+    if (rate >= 100) {
+
+        return Number(rate)
+            .toFixed(2);
+    }
+
+
+    if (rate >= 10) {
+
+        return Number(rate)
+            .toFixed(3);
+    }
+
+
+    return Number(rate)
+        .toFixed(4);
+}
+
+
+/* ---------------------------------------------------------
+   UPDATE TIME
+   --------------------------------------------------------- */
+
+function formatUpdateTime(
+    unixTime
+) {
+
+    if (!unixTime) {
+
+        return "Latest available rate";
+    }
+
+
+    const date =
+        new Date(
+            unixTime * 1000
+        );
+
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            dateStyle: "medium",
+            timeStyle: "short"
+        }
+    );
+}
+
+
+/* ---------------------------------------------------------
    SWAP
-   ========================================================= */
+   --------------------------------------------------------- */
 
 swapBtn.addEventListener(
     "click",
     async () => {
 
-        swapBtn.style.transform =
-            "rotate(180deg)";
-
-
         const oldFrom =
             fromCurrency.value;
+
 
         const oldTo =
             toCurrency.value;
@@ -310,26 +443,28 @@ swapBtn.addEventListener(
         fromCurrency.value =
             oldTo;
 
+
         toCurrency.value =
             oldFrom;
+
+
+        lastBaseCurrency =
+            null;
 
 
         await convertCurrency();
 
 
-        setTimeout(() => {
-
-            swapBtn.style.transform =
-                "";
-
-        }, 350);
+        showToast(
+            "Currencies swapped"
+        );
     }
 );
 
 
-/* =========================================================
-   CONVERSION EVENTS
-   ========================================================= */
+/* ---------------------------------------------------------
+   CONVERT BUTTON
+   --------------------------------------------------------- */
 
 convertBtn.addEventListener(
     "click",
@@ -337,24 +472,12 @@ convertBtn.addEventListener(
 );
 
 
-fromCurrency.addEventListener(
-    "change",
-    convertCurrency
-);
-
-
-toCurrency.addEventListener(
-    "change",
-    convertCurrency
-);
-
-
-/*
-   Debounced amount conversion
-   prevents excessive API requests
-*/
+/* ---------------------------------------------------------
+   AMOUNT INPUT
+   --------------------------------------------------------- */
 
 let typingTimer;
+
 
 amountInput.addEventListener(
     "input",
@@ -364,18 +487,45 @@ amountInput.addEventListener(
             typingTimer
         );
 
+
         typingTimer =
             setTimeout(
                 convertCurrency,
-                450
+                500
             );
     }
 );
 
 
-/* =========================================================
-   MARKET RATES
-   ========================================================= */
+/* ---------------------------------------------------------
+   CURRENCY CHANGE
+   --------------------------------------------------------- */
+
+fromCurrency.addEventListener(
+    "change",
+    async () => {
+
+        lastBaseCurrency =
+            null;
+
+
+        await convertCurrency();
+    }
+);
+
+
+toCurrency.addEventListener(
+    "change",
+    async () => {
+
+        await convertCurrency();
+    }
+);
+
+
+/* ---------------------------------------------------------
+   MARKET CARDS
+   --------------------------------------------------------- */
 
 async function loadMarketRates() {
 
@@ -386,100 +536,72 @@ async function loadMarketRates() {
 
     try {
 
-        const currencies =
-            "USD,EUR,GBP,AED";
-
-
-        const url =
-            `${API_BASE}/latest?from=INR&to=${currencies}`;
-
-
-        const response =
-            await fetch(url);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
-
+        /*
+         * One request gets all
+         * INR-based rates.
+         */
 
         const data =
-            await response.json();
+            await getRates(
+                "INR"
+            );
 
 
-        marketPairs.forEach(
-            pair => {
-
-                const card =
-                    document.getElementById(
-                        pair.element
-                    );
+        const rates =
+            data.rates;
 
 
-                if (!card) return;
+        /*
+         * API gives:
 
+         * 1 INR = USD value
 
-                const directRate =
-                    data.rates[pair.to];
+         * We need:
 
+         * 1 USD = INR value
+         */
 
-                if (!directRate) {
-
-                    card.textContent =
-                        "N/A";
-
-                    return;
-                }
-
-
-                /*
-                   API gives:
-
-                   1 INR = X USD
-
-                   For displaying:
-
-                   1 USD = X INR
-
-                   therefore:
-
-                   1 / X
-                */
-
-                const inverseRate =
-                    1 / directRate;
-
-
-                card.textContent =
-                    `₹${formatNumber(
-                        inverseRate,
-                        4
-                    )}`;
-
-
-                if (pair.changeElement) {
-
-                    const change =
-                        document.getElementById(
-                            pair.changeElement
-                        );
-
-
-                    if (change) {
-
-                        change.textContent =
-                            `Reference • ${data.date}`;
-                    }
-                }
-            }
+        updateMarketCard(
+            "usdInr",
+            rates.USD
         );
 
 
+        updateMarketCard(
+            "eurInr",
+            rates.EUR
+        );
+
+
+        updateMarketCard(
+            "gbpInr",
+            rates.GBP
+        );
+
+
+        updateMarketCard(
+            "aedInr",
+            rates.AED
+        );
+
+
+        const usdChange =
+            document.getElementById(
+                "usdChange"
+            );
+
+
+        if (usdChange) {
+
+            usdChange.textContent =
+                `Updated ${formatUpdateTime(
+                    data.time_last_update_unix
+                )}`;
+        }
+
+
         showToast(
-            "Market rates refreshed."
+            "Market rates refreshed"
         );
 
 
@@ -488,33 +610,36 @@ async function loadMarketRates() {
     catch (error) {
 
         console.error(
-            "Market error:",
+            "Market loading error:",
             error
         );
 
 
-        marketPairs.forEach(
-            pair => {
-
-                const element =
-                    document.getElementById(
-                        pair.element
-                    );
+        setMarketUnavailable(
+            "usdInr"
+        );
 
 
-                if (element) {
+        setMarketUnavailable(
+            "eurInr"
+        );
 
-                    element.textContent =
-                        "—";
-                }
-            }
+
+        setMarketUnavailable(
+            "gbpInr"
+        );
+
+
+        setMarketUnavailable(
+            "aedInr"
         );
 
 
         showToast(
-            "Market data could not be refreshed."
+            "Unable to retrieve market data"
         );
     }
+
 
     finally {
 
@@ -525,42 +650,113 @@ async function loadMarketRates() {
 }
 
 
-/* =========================================================
-   REFRESH BUTTON
-   ========================================================= */
+/* ---------------------------------------------------------
+   MARKET CARD UPDATE
+   --------------------------------------------------------- */
+
+function updateMarketCard(
+    elementId,
+    directRate
+) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (
+        !element ||
+        !directRate
+    ) {
+
+        return;
+    }
+
+
+    const inverseRate =
+        1 / directRate;
+
+
+    element.textContent =
+        `₹${formatNumber(
+            inverseRate,
+            4
+        )}`;
+}
+
+
+/* ---------------------------------------------------------
+   MARKET UNAVAILABLE
+   --------------------------------------------------------- */
+
+function setMarketUnavailable(
+    elementId
+) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            "Unavailable";
+    }
+}
+
+
+/* ---------------------------------------------------------
+   REFRESH
+   --------------------------------------------------------- */
 
 refreshBtn.addEventListener(
     "click",
     async () => {
 
-        await Promise.all([
-            loadMarketRates(),
-            convertCurrency()
-        ]);
+        lastBaseCurrency =
+            null;
+
+
+        await loadMarketRates();
+
+
+        await convertCurrency();
     }
 );
 
 
-/* =========================================================
+/* ---------------------------------------------------------
    DARK MODE
-   ========================================================= */
+   --------------------------------------------------------- */
 
-function applyTheme(theme) {
+function applyTheme(
+    theme
+) {
 
-    if (theme === "dark") {
+    if (
+        theme ===
+        "dark"
+    ) {
 
         document.body.classList.add(
             "dark"
         );
 
+
         themeBtn.textContent =
             "☀️";
 
-    } else {
+    }
+
+    else {
 
         document.body.classList.remove(
             "dark"
         );
+
 
         themeBtn.textContent =
             "🌙";
@@ -575,7 +771,8 @@ const savedTheme =
 
 
 applyTheme(
-    savedTheme || "light"
+    savedTheme ||
+    "light"
 );
 
 
@@ -608,16 +805,18 @@ themeBtn.addEventListener(
 );
 
 
-/* =========================================================
-   KEYBOARD SHORTCUT
-   Enter = Convert
-   ========================================================= */
+/* ---------------------------------------------------------
+   KEYBOARD
+   --------------------------------------------------------- */
 
 amountInput.addEventListener(
     "keydown",
     event => {
 
-        if (event.key === "Enter") {
+        if (
+            event.key ===
+            "Enter"
+        ) {
 
             convertCurrency();
         }
@@ -625,38 +824,57 @@ amountInput.addEventListener(
 );
 
 
-/* =========================================================
-   AUTO REFRESH
-   ========================================================= */
-
-/*
-   Refresh reference rates every 5 minutes.
-
-   This does NOT mean the source itself
-   provides tick-by-tick FX market prices.
-*/
-
-setInterval(
-    () => {
-
-        loadMarketRates();
-
-    },
-    5 * 60 * 1000
-);
-
-
-/* =========================================================
+/* ---------------------------------------------------------
    INITIAL LOAD
-   ========================================================= */
+   --------------------------------------------------------- */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
+async function initializeRateX() {
 
-        await convertCurrency();
+    try {
+
+        /*
+         * Load INR market cards first.
+         */
 
         await loadMarketRates();
 
+
+        /*
+         * Then perform the user's
+         * selected conversion.
+         */
+
+        await convertCurrency();
+
     }
-);
+
+    catch (error) {
+
+        console.error(
+            "Initialization failed:",
+            error
+        );
+    }
+}
+
+
+/* ---------------------------------------------------------
+   START
+   --------------------------------------------------------- */
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeRateX
+    );
+
+}
+
+else {
+
+    initializeRateX();
+}
