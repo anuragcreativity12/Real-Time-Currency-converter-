@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="RateX professional currency converter and market dashboard."
+    >
+
+    <title>RateX — Currency Converter</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="navbar">
+
+    <a
+        href="index.html"
+        class="brand"
+    >
+
+        <span class="brand-icon">R</span>
+
+        <span>
+            Rate<span>X</span>
+        </span>
+
+    </a>
+
+
+    <nav class="nav-links">
+
+        <a
+            href="index.html"
+            class="active"
+        >
+            Converter
+        </a>
+
+        <a href="market.html">
+            Markets
+        </a>
+
+        <a href="about.html">
+            About
+        </a>
+
+    </nav>
+
+
+    <button
+        id="themeBtn"
+        class="icon-btn"
+        aria-label="Toggle theme"
+    >
+        ☾
+    </button>
+
+</header>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="live-badge">
+
+            <span class="live-dot"></span>
+
+            LIVE MARKET DATA
+
+        </div>
+
+
+        <h1>
+            Global currencies.<br>
+            <span>One simple converter.</span>
+        </h1>
+
+
+        <p>
+            Convert currencies using current reference
+            exchange rates with a clean and professional
+            market experience.
+        </p>
+
+    </section>
+
+
+    <!-- =================================================
+         CONVERTER
+    ================================================== -->
+
+    <section class="converter-wrapper">
+
+
+        <div class="converter-header">
+
+            <div>
+
+                <p class="eyebrow">
+                    Currency Converter
+                </p>
+
+                <h2>
+                    Exchange currencies
+                </h2>
+
+            </div>
+
+
+            <div
+                id="connectionStatus"
+                class="connection-status"
+            >
+
+                <span></span>
+
+                Connecting...
+
+            </div>
+
+        </div>
+
+
+        <div class="converter-grid">
+
+
+            <!-- FROM -->
+
+            <div class="currency-panel">
+
+                <label>
+                    You send
+                </label>
+
+
+                <div class="amount-row">
+
+                    <input
+                        type="number"
+                        id="amount"
+                        value="1000"
+                        min="0"
+                        step="any"
+                    >
+
+
+                    <select
+                        id="fromCurrency"
+                    >
+
+                        <option value="USD">
+                            🇺🇸 USD
+                        </option>
+
+                        <option
+                            value="INR"
+                            selected
+                        >
+                            🇮🇳 INR
+                        </option>
+
+                        <option value="EUR">
+                            🇪🇺 EUR
+                        </option>
+
+                        <option value="GBP">
+                            🇬🇧 GBP
+                        </option>
+
+                        <option value="AED">
+                            🇦🇪 AED
+                        </option>
+
+                        <option value="SAR">
+                            🇸🇦 SAR
+                        </option>
+
+                        <option value="JPY">
+                            🇯🇵 JPY
+                        </option>
+
+                        <option value="CAD">
+                            🇨🇦 CAD
+                        </option>
+
+                        <option value="AUD">
+                            🇦🇺 AUD
+                        </option>
+
+                        <option value="SGD">
+                            🇸🇬 SGD
+                        </option>
+
+                        <option value="CHF">
+                            🇨🇭 CHF
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- SWAP -->
+
+            <button
+                id="swapBtn"
+                class="swap-button"
+                aria-label="Swap currencies"
+            >
+
+                ⇅
+
+            </button>
+
+
+            <!-- TO -->
+
+            <div class="currency-panel">
+
+                <label>
+                    You receive
+                </label>
+
+
+                <div class="amount-row">
+
+                    <input
+                        type="text"
+                        id="result"
+                        value="—"
+                        readonly
+                    >
+
+
+                    <select
+                        id="toCurrency"
+                    >
+
+                        <option
+                            value="USD"
+                            selected
+                        >
+                            🇺🇸 USD
+                        </option>
+
+                        <option value="INR">
+                            🇮🇳 INR
+                        </option>
+
+                        <option value="EUR">
+                            🇪🇺 EUR
+                        </option>
+
+                        <option value="GBP">
+                            🇬🇧 GBP
+                        </option>
+
+                        <option value="AED">
+                            🇦🇪 AED
+                        </option>
+
+                        <option value="SAR">
+                            🇸🇦 SAR
+                        </option>
+
+                        <option value="JPY">
+                            🇯🇵 JPY
+                        </option>
+
+                        <option value="CAD">
+                            🇨🇦 CAD
+                        </option>
+
+                        <option value="AUD">
+                            🇦🇺 AUD
+                        </option>
+
+                        <option value="SGD">
+                            🇸🇬 SGD
+                        </option>
+
+                        <option value="CHF">
+                            🇨🇭 CHF
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RATE -->
+
+        <div class="rate-box">
+
+            <div>
+
+                <span>
+                    Exchange rate
+                </span>
+
+                <strong id="rateText">
+                    Loading rate...
+                </strong>
+
+            </div>
+
+
+            <div class="updated">
+
+                <span>
+                    Last updated
+                </span>
+
+                <strong id="updateTime">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="convertBtn"
+            class="primary-btn"
+        >
+
+            Convert Currency
+
+            <span>→</span>
+
+        </button>
+
+    </section>
+
+
+    <!-- =================================================
+         QUICK MARKET
+    ================================================== -->
+
+    <section class="market-preview">
+
+        <div class="section-top">
+
+            <div>
+
+                <p class="eyebrow">
+                    Markets
+                </p>
+
+                <h2>
+                    Popular exchange rates
+                </h2>
+
+            </div>
+
+
+            <a
+                href="market.html"
+                class="text-link"
+            >
+                View markets →
+            </a>
+
+        </div>
+
+
+        <div class="market-grid">
+
+
+            <article class="market-card">
+
+                <div class="pair">
+                    USD / INR
+                </div>
+
+                <strong id="usdInr">
+                    —
+                </strong>
+
+                <span
+                    id="usdStatus"
+                    class="market-status"
+                >
+                    Loading
+                </span>
+
+            </article>
+
+
+            <article class="market-card">
+
+                <div class="pair">
+                    EUR / INR
+                </div>
+
+                <strong id="eurInr">
+                    —
+                </strong>
+
+                <span class="market-status">
+                    Reference
+                </span>
+
+            </article>
+
+
+            <article class="market-card">
+
+                <div class="pair">
+                    GBP / INR
+                </div>
+
+                <strong id="gbpInr">
+                    —
+                </strong>
+
+                <span class="market-status">
+                    Reference
+                </span>
+
+            </article>
+
+
+            <article class="market-card">
+
+                <div class="pair">
+                    AED / INR
+                </div>
+
+                <strong id="aedInr">
+                    —
+                </strong>
+
+                <span class="market-status">
+                    Reference
+                </span>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         RECENT
+    ================================================== -->
+
+    <section class="recent-section">
+
+        <div class="section-top">
+
+            <div>
+
+                <p class="eyebrow">
+                    Activity
+                </p>
+
+                <h2>
+                    Recent conversions
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="recentConversions"
+            class="recent-list"
+        >
+
+            <div class="empty-state">
+
+                No conversions yet.
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-inner">
+
+        <div>
+
+            <strong>
+                💱 RateX
+            </strong>
+
+            <p>
+                Professional currency conversion experience.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <a href="index.html">
+                Converter
+            </a>
+
+            <a href="market.html">
+                Markets
+            </a>
+
+            <a href="about.html">
+                About
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="copyright">
+
+        © 2026 RateX. Exchange rates are for
+        informational purposes only.
+
+    </div>
+
+</footer>
+
+
+<!-- TOAST -->
+
+<div
+    id="toast"
+    class="toast"
+></div>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
