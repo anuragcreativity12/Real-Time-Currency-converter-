@@ -2,84 +2,30 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>RateX — Markets</title>
 
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
+    <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-
 <header class="navbar">
 
-    <a
-        href="index.html"
-        class="brand"
-    >
-
-        <span class="brand-icon">R</span>
-
-        <span>
-            Rate<span>X</span>
-        </span>
-
+    <a href="index.html" class="logo">
+        💱 <span>RateX</span>
     </a>
 
-
-    <nav class="nav-links">
-
-        <a href="index.html">
-            Converter
-        </a>
-
-        <a
-            href="market.html"
-            class="active"
-        >
-            Markets
-        </a>
-
-        <a href="about.html">
-            About
-        </a>
-
+    <nav>
+        <a href="index.html">Converter</a>
+        <a class="active" href="market.html">Markets</a>
+        <a href="about.html">About</a>
     </nav>
 
-
-    <button
-        id="themeBtn"
-        class="icon-btn"
-    >
-        ☾
+    <button id="themeBtn" class="theme-btn">
+        🌙
     </button>
 
 </header>
@@ -87,302 +33,133 @@
 
 <main>
 
+<section class="page-hero">
 
-    <section class="page-hero">
+    <div class="live-badge">
+        <span></span> LIVE MARKET DATA
+    </div>
 
-        <p class="eyebrow">
-            MARKET OVERVIEW
+    <h1>Global <strong>Markets</strong></h1>
+
+    <p>
+        Monitor major currency pairs using current reference rates.
+    </p>
+
+</section>
+
+
+<section class="market-top">
+
+    <div>
+        <h2>Popular Currency Pairs</h2>
+
+        <p id="marketStatus">
+            Loading market data...
         </p>
+    </div>
 
-        <h1>
-            Currency Markets
-        </h1>
+    <button id="refreshBtn" class="refresh-btn">
+        🔄 Refresh
+    </button>
 
-        <p>
-            Monitor popular currency pairs using
-            current reference exchange rates.
-        </p>
+</section>
 
-    </section>
 
+<section class="market-grid">
 
-    <section class="market-dashboard">
+    <div class="market-card">
+        <span>🇺🇸 USD / 🇮🇳 INR</span>
+        <strong id="usdInr">Loading...</strong>
+        <small id="usdInrTime">Waiting...</small>
+    </div>
 
 
-        <div class="dashboard-top">
+    <div class="market-card">
+        <span>🇪🇺 EUR / 🇮🇳 INR</span>
+        <strong id="eurInr">Loading...</strong>
+        <small>Live reference</small>
+    </div>
 
-            <div>
 
-                <h2>
-                    Major currency pairs
-                </h2>
+    <div class="market-card">
+        <span>🇬🇧 GBP / 🇮🇳 INR</span>
+        <strong id="gbpInr">Loading...</strong>
+        <small>Live reference</small>
+    </div>
 
-                <p>
-                    Base currency: USD
-                </p>
 
-            </div>
+    <div class="market-card">
+        <span>🇦🇪 AED / 🇮🇳 INR</span>
+        <strong id="aedInr">Loading...</strong>
+        <small>Live reference</small>
+    </div>
 
 
-            <button
-                id="marketRefresh"
-                class="secondary-btn"
-            >
+    <div class="market-card">
+        <span>🇸🇦 SAR / 🇮🇳 INR</span>
+        <strong id="sarInr">Loading...</strong>
+        <small>Live reference</small>
+    </div>
 
-                ↻ Refresh
 
-            </button>
+    <div class="market-card">
+        <span>🇯🇵 JPY / 🇮🇳 INR</span>
+        <strong id="jpyInr">Loading...</strong>
+        <small>Live reference</small>
+    </div>
 
-        </div>
 
+    <div class="market-card">
+        <span>🇨🇦 CAD / 🇮🇳 INR</span>
+        <strong id="cadInr">Loading...</strong>
+        <small>Live reference</small>
+    </div>
 
-        <div class="large-market-grid">
 
+    <div class="market-card">
+        <span>🇦🇺 AUD / 🇮🇳 INR</span>
+        <strong id="audInr">Loading...</strong>
+        <small>Live reference</small>
+    </div>
 
-            <article class="large-market-card">
+</section>
 
-                <div class="market-card-top">
 
-                    <span>
-                        USD / INR
-                    </span>
+<section class="market-note">
 
-                    <span class="pill">
-                        LIVE
-                    </span>
+    <h3>📡 About the Market Data</h3>
 
-                </div>
+    <p>
+        RateX retrieves exchange-rate information from an
+        external exchange-rate API. Currency values can change
+        continuously in the financial markets.
+    </p>
 
+    <p>
+        The displayed values should be treated as reference
+        rates and may differ from rates offered by banks,
+        brokers or money-transfer providers.
+    </p>
 
-                <strong id="marketUsdInr">
-                    —
-                </strong>
-
-
-                <p>
-                    US Dollar → Indian Rupee
-                </p>
-
-            </article>
-
-
-            <article class="large-market-card">
-
-                <div class="market-card-top">
-
-                    <span>
-                        EUR / INR
-                    </span>
-
-                    <span class="pill">
-                        RATE
-                    </span>
-
-                </div>
-
-
-                <strong id="marketEurInr">
-                    —
-                </strong>
-
-
-                <p>
-                    Euro → Indian Rupee
-                </p>
-
-            </article>
-
-
-            <article class="large-market-card">
-
-                <div class="market-card-top">
-
-                    <span>
-                        GBP / INR
-                    </span>
-
-                    <span class="pill">
-                        RATE
-                    </span>
-
-                </div>
-
-
-                <strong id="marketGbpInr">
-                    —
-                </strong>
-
-
-                <p>
-                    British Pound → Indian Rupee
-                </p>
-
-            </article>
-
-
-            <article class="large-market-card">
-
-                <div class="market-card-top">
-
-                    <span>
-                        AED / INR
-                    </span>
-
-                    <span class="pill">
-                        RATE
-                    </span>
-
-                </div>
-
-
-                <strong id="marketAedInr">
-                    —
-                </strong>
-
-
-                <p>
-                    UAE Dirham → Indian Rupee
-                </p>
-
-            </article>
-
-
-            <article class="large-market-card">
-
-                <div class="market-card-top">
-
-                    <span>
-                        USD / EUR
-                    </span>
-
-                    <span class="pill">
-                        RATE
-                    </span>
-
-                </div>
-
-
-                <strong id="marketUsdEur">
-                    —
-                </strong>
-
-
-                <p>
-                    US Dollar → Euro
-                </p>
-
-            </article>
-
-
-            <article class="large-market-card">
-
-                <div class="market-card-top">
-
-                    <span>
-                        USD / GBP
-                    </span>
-
-                    <span class="pill">
-                        RATE
-                    </span>
-
-                </div>
-
-
-                <strong id="marketUsdGbp">
-                    —
-                </strong>
-
-
-                <p>
-                    US Dollar → British Pound
-                </p>
-
-            </article>
-
-
-        </div>
-
-    </section>
-
-
-    <section class="info-section">
-
-        <div class="info-card">
-
-            <span class="info-icon">
-                ℹ
-            </span>
-
-            <div>
-
-                <h3>
-                    About market rates
-                </h3>
-
-                <p>
-                    Rates shown by RateX are reference
-                    exchange rates and may differ from
-                    rates offered by banks, brokers or
-                    payment providers.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
+</section>
 
 </main>
 
 
 <footer>
 
-    <div class="footer-inner">
+    <strong>💱 RateX</strong>
 
-        <div>
-
-            <strong>
-                💱 RateX
-            </strong>
-
-            <p>
-                Professional currency conversion experience.
-            </p>
-
-        </div>
-
-
-        <div class="footer-links">
-
-            <a href="index.html">
-                Converter
-            </a>
-
-            <a href="market.html">
-                Markets
-            </a>
-
-            <a href="about.html">
-                About
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <div class="copyright">
-
-        © 2026 RateX.
-
-    </div>
+    <p>
+        Developed by Anurag Mishra
+    </p>
 
 </footer>
 
 
+<div id="toast" class="toast"></div>
+
 <script src="script.js"></script>
 
 </body>
-
 </html>
