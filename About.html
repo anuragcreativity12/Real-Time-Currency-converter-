@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,158 +6,463 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="description"
-          content="About Anurag Mishra - Developer of RateX">
+    <meta
+        name="description"
+        content="RateX - Professional live currency converter"
+    >
 
-    <title>RateX | About</title>
+    <title>RateX | Live Currency Converter</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
+
 <body>
 
-<!-- NAVBAR -->
 
-<header class="navbar">
+    <!-- =====================================================
+         NAVBAR
+         ===================================================== -->
 
-    <a href="index.html" class="logo">
-        💱 <span>RateX</span>
-    </a>
+    <header class="navbar">
 
-    <nav>
-
-        <a href="index.html">
-            Converter
-        </a>
-
-        <a href="Market.html">
-            Markets
-        </a>
-
-        <a href="About.html"
-           class="active">
-
-            About
-
-        </a>
-
-    </nav>
-
-    <button id="themeBtn"
-            class="icon-btn">
-
-        🌙
-
-    </button>
-
-</header>
-
-
-<!-- MAIN -->
-
-<main>
-
-    <!-- HERO -->
-
-    <section class="hero">
-
-        <div class="live-badge">
-            ABOUT RATEX
-        </div>
-
-        <h1>
-            About RateX
-        </h1>
-
-        <p>
-            A modern currency conversion and market
-            interface created as a web development project.
-        </p>
-
-    </section>
-
-
-    <!-- DEVELOPER -->
-
-    <section class="developer-card">
-
-        <div class="avatar">
-            AM
+        <div class="logo">
+            💱 RateX
         </div>
 
 
-        <div class="developer-content">
+        <nav>
 
-            <span class="eyebrow">
-                DEVELOPED BY
-            </span>
+            <a
+                href="index.html"
+                class="active"
+            >
+                Converter
+            </a>
 
-            <h2>
-                Anurag Mishra
-            </h2>
+            <a href="market.html">
+                Markets
+            </a>
 
-            <h3>
-                B.Tech Computer Science Engineering
-                — 4th Year
-            </h3>
+            <a href="about.html">
+                About
+            </a>
 
-            <p>
-                RateX is a practical web development project
-                created to combine modern user interface
-                design, JavaScript functionality, API
-                integration and financial data presentation.
+        </nav>
+
+
+        <button
+            id="themeBtn"
+            class="theme-btn"
+            type="button"
+            aria-label="Toggle dark mode"
+        >
+            🌙
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HERO
+             ================================================= -->
+
+        <section class="hero">
+
+            <p class="live">
+                <span>●</span>
+                LIVE EXCHANGE RATES
             </p>
 
-        </div>
 
-    </section>
+            <h1>
+                Currency Converter
+            </h1>
 
 
-    <!-- DETAILS -->
+            <p>
+                Convert currencies using current reference
+                exchange rates with RateX.
+            </p>
 
-    <section class="section">
+        </section>
 
-        <div class="section-header">
 
-            <div>
 
-                <h2>
-                    Developer Details
-                </h2>
+        <!-- =================================================
+             CONVERTER
+             ================================================= -->
 
-                <p>
-                    Information about the developer
-                </p>
+        <section
+            class="converter-card"
+            aria-label="Currency converter"
+        >
+
+
+            <!-- YOU SEND -->
+
+            <div class="currency-box">
+
+                <label for="amount">
+                    You Send
+                </label>
+
+
+                <div class="input-row">
+
+                    <input
+                        type="number"
+                        id="amount"
+                        value="1000"
+                        min="0"
+                        step="0.01"
+                        inputmode="decimal"
+                        aria-label="Amount to convert"
+                    >
+
+
+                    <select
+                        id="fromCurrency"
+                        aria-label="Currency you are sending"
+                    >
+
+                        <option value="USD">
+                            🇺🇸 USD
+                        </option>
+
+                        <option
+                            value="INR"
+                            selected
+                        >
+                            🇮🇳 INR
+                        </option>
+
+                        <option value="EUR">
+                            🇪🇺 EUR
+                        </option>
+
+                        <option value="GBP">
+                            🇬🇧 GBP
+                        </option>
+
+                        <option value="AED">
+                            🇦🇪 AED
+                        </option>
+
+                        <option value="SAR">
+                            🇸🇦 SAR
+                        </option>
+
+                        <option value="JPY">
+                            🇯🇵 JPY
+                        </option>
+
+                        <option value="CAD">
+                            🇨🇦 CAD
+                        </option>
+
+                        <option value="AUD">
+                            🇦🇺 AUD
+                        </option>
+
+                        <option value="CHF">
+                            🇨🇭 CHF
+                        </option>
+
+                        <option value="SGD">
+                            🇸🇬 SGD
+                        </option>
+
+                    </select>
+
+                </div>
 
             </div>
 
-        </div>
 
 
-        <div class="details-grid">
+            <!-- SWAP -->
 
-            <div class="detail-card">
+            <button
+                id="swapBtn"
+                class="swap-btn"
+                type="button"
+                aria-label="Swap currencies"
+                title="Swap currencies"
+            >
+                ⇅
+            </button>
 
-                <div class="detail-icon">
-                    🎓
+
+
+            <!-- YOU RECEIVE -->
+
+            <div class="currency-box">
+
+                <label for="result">
+                    You Receive
+                </label>
+
+
+                <div class="input-row">
+
+                    <input
+                        type="text"
+                        id="result"
+                        value="Loading..."
+                        readonly
+                        aria-label="Converted amount"
+                    >
+
+
+                    <select
+                        id="toCurrency"
+                        aria-label="Currency you are receiving"
+                    >
+
+                        <option
+                            value="USD"
+                            selected
+                        >
+                            🇺🇸 USD
+                        </option>
+
+                        <option value="INR">
+                            🇮🇳 INR
+                        </option>
+
+                        <option value="EUR">
+                            🇪🇺 EUR
+                        </option>
+
+                        <option value="GBP">
+                            🇬🇧 GBP
+                        </option>
+
+                        <option value="AED">
+                            🇦🇪 AED
+                        </option>
+
+                        <option value="SAR">
+                            🇸🇦 SAR
+                        </option>
+
+                        <option value="JPY">
+                            🇯🇵 JPY
+                        </option>
+
+                        <option value="CAD">
+                            🇨🇦 CAD
+                        </option>
+
+                        <option value="AUD">
+                            🇦🇺 AUD
+                        </option>
+
+                        <option value="CHF">
+                            🇨🇭 CHF
+                        </option>
+
+                        <option value="SGD">
+                            🇸🇬 SGD
+                        </option>
+
+                    </select>
+
                 </div>
+
+            </div>
+
+
+
+            <!-- RATE -->
+
+            <div class="rate-info">
+
+                <strong id="rateText">
+                    Loading exchange rate...
+                </strong>
+
+
+                <span id="updateTime">
+                    Connecting to exchange-rate service...
+                </span>
+
+            </div>
+
+
+
+            <!-- CONVERT -->
+
+            <button
+                id="convertBtn"
+                class="convert-btn"
+                type="button"
+            >
+                Convert Currency
+            </button>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             QUICK CURRENCY PAIRS
+             ================================================= -->
+
+        <section class="market-section">
+
+
+            <div class="section-heading">
 
                 <div>
 
-                    <small>
-                        EDUCATION
-                    </small>
-
-                    <strong>
-                        B.Tech CSE
-                    </strong>
+                    <h2>
+                        Popular Market Rates
+                    </h2>
 
                     <p>
-                        4th Year
+                        Current reference rates against INR
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="refreshBtn"
+                    class="refresh-btn"
+                    type="button"
+                >
+                    🔄 Refresh
+                </button>
+
+            </div>
+
+
+
+            <div class="market-grid">
+
+
+                <!-- USD / INR -->
+
+                <div class="market-card">
+
+                    <span>
+                        🇺🇸 USD / 🇮🇳 INR
+                    </span>
+
+                    <strong id="usdInr">
+                        Loading...
+                    </strong>
+
+                    <small id="usdChange">
+                        Live reference
+                    </small>
+
+                </div>
+
+
+
+                <!-- EUR / INR -->
+
+                <div class="market-card">
+
+                    <span>
+                        🇪🇺 EUR / 🇮🇳 INR
+                    </span>
+
+                    <strong id="eurInr">
+                        Loading...
+                    </strong>
+
+                    <small>
+                        Live reference
+                    </small>
+
+                </div>
+
+
+
+                <!-- GBP / INR -->
+
+                <div class="market-card">
+
+                    <span>
+                        🇬🇧 GBP / 🇮🇳 INR
+                    </span>
+
+                    <strong id="gbpInr">
+                        Loading...
+                    </strong>
+
+                    <small>
+                        Live reference
+                    </small>
+
+                </div>
+
+
+
+                <!-- AED / INR -->
+
+                <div class="market-card">
+
+                    <span>
+                        🇦🇪 AED / 🇮🇳 INR
+                    </span>
+
+                    <strong id="aedInr">
+                        Loading...
+                    </strong>
+
+                    <small>
+                        Live reference
+                    </small>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FEATURES
+             ================================================= -->
+
+        <section class="market-section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        RateX Features
+                    </h2>
+
+                    <p>
+                        Simple, fast and responsive currency tools
                     </p>
 
                 </div>
@@ -164,177 +470,122 @@
             </div>
 
 
-            <div class="detail-card">
+            <div class="market-grid">
 
-                <div class="detail-icon">
-                    💻
-                </div>
 
-                <div>
+                <div class="market-card">
 
-                    <small>
-                        PROJECT
-                    </small>
+                    <span>
+                        ⚡ SPEED
+                    </span>
 
                     <strong>
-                        RateX
+                        Instant Conversion
                     </strong>
 
-                    <p>
-                        Currency & Market Platform
-                    </p>
+                    <small>
+                        Convert currencies in seconds.
+                    </small>
 
                 </div>
+
+
+                <div class="market-card">
+
+                    <span>
+                        🌍 GLOBAL
+                    </span>
+
+                    <strong>
+                        Multiple Currencies
+                    </strong>
+
+                    <small>
+                        Supports major international currencies.
+                    </small>
+
+                </div>
+
+
+                <div class="market-card">
+
+                    <span>
+                        📊 MARKET
+                    </span>
+
+                    <strong>
+                        Market Rates
+                    </strong>
+
+                    <small>
+                        View popular currency pairs.
+                    </small>
+
+                </div>
+
+
+                <div class="market-card">
+
+                    <span>
+                        📱 RESPONSIVE
+                    </span>
+
+                    <strong>
+                        Mobile Friendly
+                    </strong>
+
+                    <small>
+                        Designed for desktop, tablet and mobile.
+                    </small>
+
+                </div>
+
 
             </div>
 
-
-            <div class="detail-card">
-
-                <div class="detail-icon">
-                    📧
-                </div>
-
-                <div>
-
-                    <small>
-                        EMAIL
-                    </small>
-
-                    <strong>
-                        officialanuragmishra@gmail.com
-                    </strong>
-
-                    <p>
-                        Developer contact
-                    </p>
-
-                </div>
-
-            </div>
+        </section>
 
 
-            <div class="detail-card">
-
-                <div class="detail-icon">
-                    📱
-                </div>
-
-                <div>
-
-                    <small>
-                        MOBILE
-                    </small>
-
-                    <strong>
-                        8709983391
-                    </strong>
-
-                    <p>
-                        Developer contact
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
+    </main>
 
 
-    <!-- TECHNOLOGY -->
 
-    <section class="project-card">
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
 
-        <span class="project-badge">
-            💱 RATEX
-        </span>
-
-        <h2>
-            Built With Modern Web Technologies
-        </h2>
+    <footer>
 
         <p>
-            RateX demonstrates frontend development,
-            responsive design, API integration and
-            interactive JavaScript functionality.
+            © 2026 RateX — Developed by Anurag Mishra
         </p>
-
-
-        <div class="tech-list">
-
-            <span>HTML5</span>
-
-            <span>CSS3</span>
-
-            <span>JavaScript</span>
-
-            <span>REST API</span>
-
-            <span>Responsive UI</span>
-
-        </div>
-
-    </section>
-
-
-    <!-- CONTACT -->
-
-    <section class="contact-card">
-
-        <h2>
-            Get In Touch
-        </h2>
 
         <p>
-            For questions, suggestions or collaboration,
-            contact the developer.
+            Exchange rates are provided for reference purposes.
         </p>
 
-
-        <div class="contact-buttons">
-
-            <a
-                href="mailto:officialanuragmishra@gmail.com"
-                class="primary-btn"
-            >
-                📧 Email Developer
-            </a>
+    </footer>
 
 
-            <a
-                href="tel:8709983391"
-                class="secondary-btn"
-            >
-                📱 Call Developer
-            </a>
 
-        </div>
+    <!-- =====================================================
+         TOAST
+         ===================================================== -->
 
-    </section>
-
-</main>
-
-
-<!-- FOOTER -->
-
-<footer>
-
-    <strong>💱 RateX</strong>
-
-    <p>
-        Developed by Anurag Mishra
-    </p>
-
-    <p>
-        © 2026 RateX
-    </p>
-
-</footer>
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+    ></div>
 
 
-<script src="script.js"></script>
+
+    <!-- JAVASCRIPT -->
+
+    <script src="script.js"></script>
 
 </body>
+
 </html>
+```
